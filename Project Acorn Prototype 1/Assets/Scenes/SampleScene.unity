@@ -197,7 +197,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 268468325}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.23, y: -2.03, z: 0}
+  m_LocalPosition: {x: -1.1, y: -0.14, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 4}
   m_Children: []
   m_Father: {fileID: 0}
@@ -255,6 +255,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   horizontalRayCount: 8
   verticalRayCount: 4
+  collisionMask:
+    serializedVersion: 2
+    m_Bits: 4096
 --- !u!1 &442470886
 GameObject:
   m_ObjectHideFlags: 0
@@ -1276,8 +1279,8 @@ Tilemap:
       m_ColliderType: 1
   - first: {x: 0, y: 5, z: 0}
     second:
-      m_TileIndex: 24
-      m_TileSpriteIndex: 24
+      m_TileIndex: 26
+      m_TileSpriteIndex: 26
       m_TileMatrixIndex: 0
       m_TileColorIndex: 0
       m_ObjectToInstantiate: {fileID: 0}
@@ -1648,10 +1651,12 @@ Tilemap:
     m_Data: {fileID: 11400000, guid: 7d6895b1706d86b4f87d877ad61cc3ab, type: 2}
   - m_RefCount: 4
     m_Data: {fileID: 11400000, guid: 66939088bf26673409bb6cf768f2392d, type: 2}
-  - m_RefCount: 3
+  - m_RefCount: 2
     m_Data: {fileID: 11400000, guid: 62107a3b035c91d49bac8755a1c99070, type: 2}
   - m_RefCount: 2
     m_Data: {fileID: 11400000, guid: 16ffd9a3a64a5264985d9de3e0116fd2, type: 2}
+  - m_RefCount: 1
+    m_Data: {fileID: 11400000, guid: 4a25c9e9c21c212459e5e27d1329a983, type: 2}
   m_TileSpriteArray:
   - m_RefCount: 5
     m_Data: {fileID: -108113100532424342, guid: 795455dbd1ea5ee40818e873119856e7,
@@ -1724,11 +1729,14 @@ Tilemap:
   - m_RefCount: 4
     m_Data: {fileID: 5809600702112932243, guid: 795455dbd1ea5ee40818e873119856e7,
       type: 3}
-  - m_RefCount: 3
+  - m_RefCount: 2
     m_Data: {fileID: -4924494168718581045, guid: 795455dbd1ea5ee40818e873119856e7,
       type: 3}
   - m_RefCount: 2
     m_Data: {fileID: -2151763387949407991, guid: 795455dbd1ea5ee40818e873119856e7,
+      type: 3}
+  - m_RefCount: 1
+    m_Data: {fileID: 6103816001543416472, guid: 795455dbd1ea5ee40818e873119856e7,
       type: 3}
   m_TileMatrixArray:
   - m_RefCount: 119
