@@ -15,7 +15,7 @@ public class Player : MonoBehaviour
     float accelerationTimeAirborne = .3f;
     float accelerationTimeGrounded = .1f;
 
-    float moveSpeed = 8;
+    public float moveSpeed = 7;
     float gravity;
     float maxJumpVelocity;
     float minJumpVelocity;
@@ -41,8 +41,10 @@ public class Player : MonoBehaviour
 
         //calculate the gravity from the jumpHeight and timeToJumpApex
         gravity = -(2 * maxJumpHeight) / Mathf.Pow(timeToJumpApex, 2);
-        //calculate the jumpVelocity
+        //calculate the maxjumpVelocity and minJumpVelocity
         maxJumpVelocity = Mathf.Abs(gravity) * timeToJumpApex;
+        minJumpVelocity = Mathf.Sqrt(2 * Mathf.Abs(gravity) * minJumpHeight);
+
 
         //print gravity and jumpVelocity
         //print("Gravity: " + gravity + "Jump Velocity: " + jumpVelocity);
@@ -124,6 +126,12 @@ public class Player : MonoBehaviour
                 velocity.y = maxJumpVelocity;
             }//end if
             
+        }//end if
+        if (Input.GetKeyUp(KeyCode.Space))
+        {
+            //set the y velocity to minJumpVelocity if it is greater than minJumpVelocity
+            velocity.y = (velocity.y > minJumpVelocity) ? minJumpVelocity : velocity.y;
+
         }//end if
 
         //apply gravity
