@@ -8,7 +8,8 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
 
-    public float jumpHeight = 4;
+    public float maxJumpHeight = 4;
+    public float minJumpHeight = 1.5f;
     public float timeToJumpApex = .3f;
 
     float accelerationTimeAirborne = .3f;
@@ -16,9 +17,16 @@ public class Player : MonoBehaviour
 
     float moveSpeed = 8;
     float gravity;
-    float jumpVelocity;
+    float maxJumpVelocity;
+    float minJumpVelocity;
 
     Vector2 velocity;
+    public Vector2 wallJumpForce;
+
+    public float wallSlideSpeedMax = 5;
+
+    public float wallStickTime = 0.01f;
+    public float timeToWallUnstick = 0.01f;
 
     float velocityXSmoothing;
 
@@ -32,43 +40,97 @@ public class Player : MonoBehaviour
         controller = GetComponent<Controller2D>();
 
         //calculate the gravity from the jumpHeight and timeToJumpApex
-        gravity = -(2 * jumpHeight) / Mathf.Pow(timeToJumpApex, 2);
+        gravity = -(2 * maxJumpHeight) / Mathf.Pow(timeToJumpApex, 2);
         //calculate the jumpVelocity
-        jumpVelocity = Mathf.Abs(gravity) * timeToJumpApex;
+        maxJumpVelocity = Mathf.Abs(gravity) * timeToJumpApex;
 
         //print gravity and jumpVelocity
         //print("Gravity: " + gravity + "Jump Velocity: " + jumpVelocity);
-    }
+    }//end Start method
 
     // Update is called once per frame
     void Update()
     {
 
+        //get player's input
+        Vector2 input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+        //get the direction of the wall we're colliding with
+        int wallDirX = ((controller.collisions.left) ? -1 : 1);
+
+        //apply player's horizontal input smoothly
+        float targetVelocityX = input.x * moveSpeed;
+        velocity.x = Mathf.SmoothDamp(velocity.x, targetVelocityX, ref velocityXSmoothing, (controller.collisions.below) ? accelerationTimeGrounded : accelerationTimeAirborne);
+
+        bool wallSliding = false;
+
+        //check if player is wall sliding
+        if((controller.collisions.left || controller.collisions.right) && !controller.collisions.below && velocity.y < 0)
+        {
+
+            wallSliding = true;
+
+            if(velocity.y < -wallSlideSpeedMax)
+            {
+                velocity.y = -wallSlideSpeedMax;
+
+            }//end if
+
+                //This block causes us to slide off the wall after a certain length of time holding the key 
+                //away from the wall, thereby making the wall jump more difficult to perform
+                //(since wallStickTime and timeToWallUnstick are public, they have to be changed in the inspector)
+                if ((input.x != wallDirX && input.x != 0) && (timeToWallUnstick > 0))
+                {
+     
+                        timeToWallUnstick -= Time.deltaTime;
+                        velocityXSmoothing = 0;
+                        velocity.x = 0;                   
+
+
+                } else
+                {
+                    velocity.x = input.x;
+                    timeToWallUnstick = wallStickTime;
+                }//end if/else
+
+        }//end if
+
+    
+
         //reset player's vertical momentum if they hit a floor or ceiling
         if (controller.collisions.above || controller.collisions.below)
         {
             velocity.y = 0;
-        }
-
-        //get player's input
-        Vector2 input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+        }//end if
 
         //get jump input
-        if(Input.GetKeyDown(KeyCode.Space) && controller.collisions.below)
+        if(Input.GetKeyDown(KeyCode.Space))
         {
 
-            velocity.y = jumpVelocity;
+            if (wallSliding)
+            {
+                //only allow wall jumps if the input is in the opposite direction from the wall
+                if((input.x != wallDirX) && (input.x != 0))
+                {
+                    velocity.x = -wallDirX * wallJumpForce.x;
+                    velocity.y = wallJumpForce.y;
+                }
 
-        }
 
-        //apply player's horizontal input smoothly
-        float targetVelocityX =  input.x * moveSpeed;
-        velocity.x = Mathf.SmoothDamp(velocity.x, targetVelocityX, ref velocityXSmoothing, (controller.collisions.below)?accelerationTimeGrounded:accelerationTimeAirborne);
+            }//end if
+
+            //allow a regular jump if we're standing on the ground
+            if(controller.collisions.below)
+            {
+                velocity.y = maxJumpVelocity;
+            }//end if
+            
+        }//end if
 
         //apply gravity
         velocity.y += gravity * Time.deltaTime;
 
         //call controller's move method. this method will calculate how much to move the player to avoid collisions
         controller.Move(velocity * Time.deltaTime);
-    }
+
+    }//end Update method
 }

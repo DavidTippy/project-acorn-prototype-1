@@ -241,6 +241,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f58614bad2ba2f143812e6b6edb7a63d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  jumpHeight: 4
+  timeToJumpApex: 0.3
+  wallJumpForce: {x: 15, y: 26}
+  wallSlideSpeedMax: 5
 --- !u!114 &268468330
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -253,11 +257,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77113915cc7001744a92661bdb0885bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  horizontalRayCount: 8
-  verticalRayCount: 4
   collisionMask:
     serializedVersion: 2
     m_Bits: 4096
+  horizontalRayCount: 8
+  verticalRayCount: 4
+  horizontalRaySpacing: 0
+  verticalRaySpacing: 0
+  collider: {fileID: 0}
 --- !u!1 &442470886
 GameObject:
   m_ObjectHideFlags: 0

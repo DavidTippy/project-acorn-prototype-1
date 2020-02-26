@@ -15,6 +15,9 @@ public class Controller2D : RaycastController
     public override void Start()
     {
         base.Start();
+
+        //set the player to face right
+        collisions.faceDir = 1;
     }
 
     public void Move(Vector2 velocity)
@@ -25,11 +28,18 @@ public class Controller2D : RaycastController
         //reset the collision info
         collisions.Reset();
 
-        //figure out if we're going to run into something to our left or right
+        //set the direction the player is facing
         if (velocity.x != 0)
         {
-            HorizontalCollisions(ref velocity);
+            collisions.faceDir = (int)Mathf.Sign(velocity.x);
         }
+
+        // figure out if we're going to run into something to our left or right
+        //if (velocity.x != 0)
+        //{
+            HorizontalCollisions(ref velocity);
+        //}
+        
 
         //figure out if we've hit something above or below us
         if (velocity.y != 0)
@@ -44,10 +54,16 @@ public class Controller2D : RaycastController
     void HorizontalCollisions(ref Vector2 velocity)
     {
         //determine if we are traveling left or right
-        float directionX = Mathf.Sign(velocity.x);
+        float directionX = collisions.faceDir;
 
         //determine how long the ray needs to be so it can "see" everything we could possibly hit
         float rayLength = Mathf.Abs(velocity.x) + skinWidth;
+
+        //make sure we can hit the wall with a ray even if we are not moving (for wall jump)
+        if(Mathf.Abs(velocity.x) < skinWidth)
+        {
+            rayLength = 2 * skinWidth;
+        }
 
         //loop throught horizontal rays to see if we hit something
         for (int i = 0; i < horizontalRayCount; i++)
@@ -129,6 +145,9 @@ public class Controller2D : RaycastController
 
         public bool above, below;
         public bool left, right;
+
+        //direction the player is facing
+        public int faceDir;
 
         public void Reset()
         {
