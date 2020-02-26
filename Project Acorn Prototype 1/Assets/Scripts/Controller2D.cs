@@ -5,36 +5,16 @@ using System.Collections.Generic;
 using UnityEngine;
 
 //make sure that the player has a BoxCollider2D component
-[RequireComponent (typeof (BoxCollider2D))]
-public class Controller2D : MonoBehaviour
+public class Controller2D : RaycastController
 {
-
-    //create collider and raycastOrigins struct (collider corners)
-    BoxCollider2D collider;
-    RaycastOrigins raycastOrigins;
 
     public CollisionInfo collisions;
 
-    //distance to inset the rays by
-    const float skinWidth = .015f;
-
-    //number of rays
-    public int horizontalRayCount = 8;
-    public int verticalRayCount = 4;
-
-    //spacing of the rays
-    float horizontalRaySpacing;
-    float verticalRaySpacing;
-
-    //layer to collide with
-    public LayerMask collisionMask;
-
-    // Start is called before the first frame update
-    void Start()
+    //This method calls the start method in RaycastController 
+    //while still allowing us to put things in the start method for Controller2D
+    public override void Start()
     {
-        //get the collider
-        collider = GetComponent<BoxCollider2D>();
-        CalculateRaySpacing();
+        base.Start();
     }
 
     public void Move(Vector2 velocity)
@@ -144,47 +124,7 @@ public class Controller2D : MonoBehaviour
 
         }//end for
     }
-
-    
-
-    void UpdateRaycastOrigins()
-    {
-        //get bounds of collider
-        Bounds bounds = collider.bounds;
-        bounds.Expand(skinWidth * -2);
-
-        //get positions of raycast origins (collider corners)
-        raycastOrigins.bottomLeft = new Vector2(bounds.min.x, bounds.min.y);
-        raycastOrigins.bottomRight = new Vector2(bounds.max.x, bounds.min.y);
-        raycastOrigins.topLeft = new Vector2(bounds.min.x, bounds.max.y);
-        raycastOrigins.topRight = new Vector2(bounds.max.x, bounds.max.y);
-    }
-
-    void CalculateRaySpacing()
-    {
-        //get bounds of collider
-        Bounds bounds = collider.bounds;
-        bounds.Expand(skinWidth * -2);
-
-        //clamp number of rays to at least two
-        horizontalRayCount = Mathf.Clamp(horizontalRayCount, 2, int.MaxValue);
-        verticalRayCount = Mathf.Clamp(verticalRayCount, 2, int.MaxValue);
-
-        //calculate spacing of rays
-        horizontalRaySpacing = bounds.size.y / (horizontalRayCount - 1);
-        verticalRaySpacing = bounds.size.x / (verticalRayCount - 1);
-    }
-
-
-    //struct that holds the corners of the collider
-    struct RaycastOrigins {
-
-        public Vector2 topLeft, topRight;
-        public Vector2 bottomLeft, bottomRight;
-  
-    
-    }
-
+ 
     public struct CollisionInfo {
 
         public bool above, below;
@@ -197,7 +137,5 @@ public class Controller2D : MonoBehaviour
         }
     
     }
-
-
 
 }
