@@ -96,13 +96,7 @@ public class Player : MonoBehaviour
 
         }//end if
 
-        //allow a regular jump if we're standing on the ground
-        if (controller.collisions.below)
-        {
-            
-            velocity.y = maxJumpVelocity;
-
-        }//end if
+        
     }
 
 
@@ -111,6 +105,19 @@ public class Player : MonoBehaviour
     {
         //set the y velocity to minJumpVelocity if it is greater than minJumpVelocity
         velocity.y = (velocity.y > minJumpVelocity) ? minJumpVelocity : velocity.y;
+    }
+
+
+
+    public void OnJumpInputHeld()
+    {
+        //allow a regular jump if we're standing on the ground
+        if (controller.collisions.below)
+        {
+
+            velocity.y = maxJumpVelocity;
+
+        }//end if
     }
 
 

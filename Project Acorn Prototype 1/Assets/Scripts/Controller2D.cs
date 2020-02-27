@@ -22,6 +22,9 @@ public class Controller2D : RaycastController
 
     public void Move(Vector2 velocity)
     {
+
+        
+
         //make sure we know where the corners of the collider are
         UpdateRaycastOrigins();
 
@@ -95,7 +98,9 @@ public class Controller2D : RaycastController
             }//end if
 
         }//end for
-    }
+    }//end method HorizontalCollisions
+
+
 
     void VerticalCollisions(ref Vector2 velocity)
     {
@@ -122,6 +127,7 @@ public class Controller2D : RaycastController
 
             if(hit)
             {
+
                 //change velocity to avoid going inside wall
                 velocity.y = (hit.distance - skinWidth) * directionY;
 
@@ -132,15 +138,13 @@ public class Controller2D : RaycastController
                 collisions.below = directionY == -1;
                 collisions.above = directionY == 1;
 
-
-
-
             }//end if
 
-
         }//end for
-    }
+    }//end method VerticalCollisions
  
+
+
     public struct CollisionInfo {
 
         public bool above, below;

@@ -36,5 +36,12 @@ public class PlayerInput : MonoBehaviour
             player.OnJumpInputUp();
 
         }//end if
+
+        if (Input.GetKey(KeyCode.Space))
+        {
+
+            player.OnJumpInputHeld();
+
+        }//end if
     }
 }
