@@ -33,6 +33,8 @@ public class Player : MonoBehaviour
     //create Controller2D script
     Controller2D controller;
 
+    Vector2 directionalInput;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -50,17 +52,22 @@ public class Player : MonoBehaviour
         //print("Gravity: " + gravity + "Jump Velocity: " + jumpVelocity);
     }//end Start method
 
+    public void SetDirectionalInput(Vector2 input)
+    {
+        directionalInput = input;
+    }
+
     // Update is called once per frame
     void Update()
     {
 
         //get player's input
-        Vector2 input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+        
         //get the direction of the wall we're colliding with
         int wallDirX = ((controller.collisions.left) ? -1 : 1);
 
         //apply player's horizontal input smoothly
-        float targetVelocityX = input.x * moveSpeed;
+        float targetVelocityX = directionalInput.x * moveSpeed;
         velocity.x = Mathf.SmoothDamp(velocity.x, targetVelocityX, ref velocityXSmoothing, (controller.collisions.below) ? accelerationTimeGrounded : accelerationTimeAirborne);
 
         bool wallSliding = false;
@@ -80,7 +87,7 @@ public class Player : MonoBehaviour
                 //This block causes us to slide off the wall after a certain length of time holding the key 
                 //away from the wall, thereby making the wall jump more difficult to perform
                 //(since wallStickTime and timeToWallUnstick are public, they have to be changed in the inspector)
-                if ((input.x != wallDirX && input.x != 0) && (timeToWallUnstick > 0))
+                if ((directionalInput.x != wallDirX && directionalInput.x != 0) && (timeToWallUnstick > 0))
                 {
      
                         timeToWallUnstick -= Time.deltaTime;
@@ -90,7 +97,7 @@ public class Player : MonoBehaviour
 
                 } else
                 {
-                    velocity.x = input.x;
+                    velocity.x = directionalInput.x;
                     timeToWallUnstick = wallStickTime;
                 }//end if/else
 
@@ -111,7 +118,7 @@ public class Player : MonoBehaviour
             if (wallSliding)
             {
                 //only allow wall jumps if the input is in the opposite direction from the wall
-                if((input.x != wallDirX) && (input.x != 0))
+                if((directionalInput.x != wallDirX) && (directionalInput.x != 0))
                 {
                     velocity.x = -wallDirX * wallJumpForce.x;
                     velocity.y = wallJumpForce.y;

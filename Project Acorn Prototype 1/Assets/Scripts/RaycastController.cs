@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿//This script is based on the series of tutorial videos "Creating a 2D Platformer" by Sebastian Lague on YouTube
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
