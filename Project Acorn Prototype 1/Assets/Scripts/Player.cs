@@ -8,6 +8,8 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
 
+    public bool canJumpEarly;
+
     public float maxJumpHeight = 4;
     public float minJumpHeight = 1.5f;
     public float timeToJumpApex = .3f;
@@ -20,7 +22,8 @@ public class Player : MonoBehaviour
     float maxJumpVelocity;
     float minJumpVelocity;
 
-    Vector2 velocity;
+    [HideInInspector]
+    public Vector2 velocity;
     public Vector2 wallJumpForce;
 
     public float wallSlideSpeedMax = 5;
@@ -96,7 +99,15 @@ public class Player : MonoBehaviour
 
         }//end if
 
-        
+        //allow a regular jump if we're standing on the ground
+        if (controller.collisions.below)
+        {
+
+            velocity.y = maxJumpVelocity;
+
+        }//end if
+
+
     }
 
 
@@ -112,10 +123,11 @@ public class Player : MonoBehaviour
     public void OnJumpInputHeld()
     {
         //allow a regular jump if we're standing on the ground
-        if (controller.collisions.below)
+        if (controller.collisions.below && canJumpEarly)
         {
 
             velocity.y = maxJumpVelocity;
+            canJumpEarly = false;
 
         }//end if
     }

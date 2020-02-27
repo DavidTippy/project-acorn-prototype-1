@@ -20,10 +20,10 @@ public class Controller2D : RaycastController
         collisions.faceDir = 1;
     }
 
+
+
     public void Move(Vector2 velocity)
     {
-
-        
 
         //make sure we know where the corners of the collider are
         UpdateRaycastOrigins();

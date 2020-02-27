@@ -21,12 +21,15 @@ public class PlayerInput : MonoBehaviour
     {
         Vector2 directionalInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
         player.SetDirectionalInput(directionalInput);
+        
 
         //get jump input
         if (Input.GetKeyDown(KeyCode.Space))
         {
 
             player.OnJumpInputDown();
+            player.canJumpEarly = (player.velocity.y < 0) ? true : false;
+
 
         }//end if
 
@@ -34,6 +37,7 @@ public class PlayerInput : MonoBehaviour
         {
 
             player.OnJumpInputUp();
+            player.canJumpEarly = false;
 
         }//end if
 
@@ -43,5 +47,7 @@ public class PlayerInput : MonoBehaviour
             player.OnJumpInputHeld();
 
         }//end if
+
+
     }
 }
