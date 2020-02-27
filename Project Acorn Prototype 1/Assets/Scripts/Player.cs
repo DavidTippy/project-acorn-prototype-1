@@ -34,6 +34,8 @@ public class Player : MonoBehaviour
     Controller2D controller;
 
     Vector2 directionalInput;
+    bool wallSliding;
+    int wallDirX;
 
     // Start is called before the first frame update
     void Start()
@@ -47,105 +49,110 @@ public class Player : MonoBehaviour
         maxJumpVelocity = Mathf.Abs(gravity) * timeToJumpApex;
         minJumpVelocity = Mathf.Sqrt(2 * Mathf.Abs(gravity) * minJumpHeight);
 
-
-        //print gravity and jumpVelocity
-        //print("Gravity: " + gravity + "Jump Velocity: " + jumpVelocity);
     }//end Start method
+
+    // Update is called once per frame
+    void Update()
+    {
+
+        //get the direction of the wall we're colliding with
+        wallDirX = ((controller.collisions.left) ? -1 : 1);
+
+        //apply player's horizontal input smoothly
+        float targetVelocityX = directionalInput.x * moveSpeed;
+        velocity.x = Mathf.SmoothDamp(velocity.x, targetVelocityX, ref velocityXSmoothing, (controller.collisions.below) ? accelerationTimeGrounded : accelerationTimeAirborne);
+
+        wallSliding = false;
+
+        //check if player is wall sliding
+        if ((controller.collisions.left || controller.collisions.right) && !controller.collisions.below && velocity.y < 0)
+        {
+
+            wallSliding = true;
+
+            if (velocity.y < -wallSlideSpeedMax)
+            {
+                velocity.y = -wallSlideSpeedMax;
+
+            }//end if
+
+            //This block causes us to slide off the wall after a certain length of time holding the key 
+            //away from the wall, thereby making the wall jump more difficult to perform
+            //(since wallStickTime and timeToWallUnstick are public, they have to be changed in the inspector)
+            if ((directionalInput.x != wallDirX && directionalInput.x != 0) && (timeToWallUnstick > 0))
+            {
+
+                timeToWallUnstick -= Time.deltaTime;
+                velocityXSmoothing = 0;
+                velocity.x = 0;
+
+
+            }
+            else
+            {
+                velocity.x = directionalInput.x;
+                timeToWallUnstick = wallStickTime;
+            }//end if/else
+
+        }//end if
+
+        //call controller's move method. this method will calculate how much to move the player to avoid collisions
+        controller.Move(velocity * Time.deltaTime);
+
+        //reset player's vertical momentum if they hit a floor or ceiling
+        if (controller.collisions.above || controller.collisions.below)
+        {
+            
+            velocity.y = 0;
+        }//end if
+
+
+        
+
+        //apply gravity
+        velocity.y += gravity * Time.deltaTime;
+
+        
+
+    }//end Update method
 
     public void SetDirectionalInput(Vector2 input)
     {
         directionalInput = input;
     }
 
-    // Update is called once per frame
-    void Update()
+    
+    
+    public void OnJumpInputDown()
     {
 
-        //get player's input
-        
-        //get the direction of the wall we're colliding with
-        int wallDirX = ((controller.collisions.left) ? -1 : 1);
-
-        //apply player's horizontal input smoothly
-        float targetVelocityX = directionalInput.x * moveSpeed;
-        velocity.x = Mathf.SmoothDamp(velocity.x, targetVelocityX, ref velocityXSmoothing, (controller.collisions.below) ? accelerationTimeGrounded : accelerationTimeAirborne);
-
-        bool wallSliding = false;
-
-        //check if player is wall sliding
-        if((controller.collisions.left || controller.collisions.right) && !controller.collisions.below && velocity.y < 0)
+        if (wallSliding)
         {
-
-            wallSliding = true;
-
-            if(velocity.y < -wallSlideSpeedMax)
+            //only allow wall jumps if the input is in the opposite direction from the wall
+            if ((directionalInput.x != wallDirX) && (directionalInput.x != 0))
             {
-                velocity.y = -wallSlideSpeedMax;
+                velocity.x = -wallDirX * wallJumpForce.x;
+                velocity.y = wallJumpForce.y;
+            }
 
-            }//end if
-
-                //This block causes us to slide off the wall after a certain length of time holding the key 
-                //away from the wall, thereby making the wall jump more difficult to perform
-                //(since wallStickTime and timeToWallUnstick are public, they have to be changed in the inspector)
-                if ((directionalInput.x != wallDirX && directionalInput.x != 0) && (timeToWallUnstick > 0))
-                {
-     
-                        timeToWallUnstick -= Time.deltaTime;
-                        velocityXSmoothing = 0;
-                        velocity.x = 0;                   
-
-
-                } else
-                {
-                    velocity.x = directionalInput.x;
-                    timeToWallUnstick = wallStickTime;
-                }//end if/else
 
         }//end if
 
-    
-
-        //reset player's vertical momentum if they hit a floor or ceiling
-        if (controller.collisions.above || controller.collisions.below)
+        //allow a regular jump if we're standing on the ground
+        if (controller.collisions.below)
         {
-            velocity.y = 0;
-        }//end if
-
-        //get jump input
-        if(Input.GetKeyDown(KeyCode.Space))
-        {
-
-            if (wallSliding)
-            {
-                //only allow wall jumps if the input is in the opposite direction from the wall
-                if((directionalInput.x != wallDirX) && (directionalInput.x != 0))
-                {
-                    velocity.x = -wallDirX * wallJumpForce.x;
-                    velocity.y = wallJumpForce.y;
-                }
-
-
-            }//end if
-
-            //allow a regular jump if we're standing on the ground
-            if(controller.collisions.below)
-            {
-                velocity.y = maxJumpVelocity;
-            }//end if
             
-        }//end if
-        if (Input.GetKeyUp(KeyCode.Space))
-        {
-            //set the y velocity to minJumpVelocity if it is greater than minJumpVelocity
-            velocity.y = (velocity.y > minJumpVelocity) ? minJumpVelocity : velocity.y;
+            velocity.y = maxJumpVelocity;
 
         }//end if
 
-        //apply gravity
-        velocity.y += gravity * Time.deltaTime;
+        
+    }
+    public void OnJumpInputUp()
+    {
+        //set the y velocity to minJumpVelocity if it is greater than minJumpVelocity
+        velocity.y = (velocity.y > minJumpVelocity) ? minJumpVelocity : velocity.y;
+    }
 
-        //call controller's move method. this method will calculate how much to move the player to avoid collisions
-        controller.Move(velocity * Time.deltaTime);
-
-    }//end Update method
+   
 }
