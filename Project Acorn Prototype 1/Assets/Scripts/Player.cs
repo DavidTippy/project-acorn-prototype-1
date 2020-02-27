@@ -37,6 +37,8 @@ public class Player : MonoBehaviour
     bool wallSliding;
     int wallDirX;
 
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -51,16 +53,72 @@ public class Player : MonoBehaviour
 
     }//end Start method
 
+
+
     // Update is called once per frame
     void Update()
     {
+        CalculateVelocity();
+        HandleWallSliding();
+     
+        //call controller's move method. this method will calculate how much to move the player to avoid collisions
+        controller.Move(velocity * Time.deltaTime);
 
+        //reset player's vertical momentum if they hit a floor or ceiling
+        if (controller.collisions.above || controller.collisions.below)
+        {           
+            velocity.y = 0;
+        }//end if
+
+    }//end Update method
+
+
+
+    public void SetDirectionalInput(Vector2 input)
+    {
+        directionalInput = input;
+    }
+
+    
+    
+    public void OnJumpInputDown()
+    {
+
+        if (wallSliding)
+        {
+            //only allow wall jumps if the input is in the opposite direction from the wall
+            if ((directionalInput.x != wallDirX) && (directionalInput.x != 0))
+            {
+                velocity.x = -wallDirX * wallJumpForce.x;
+                velocity.y = wallJumpForce.y;
+            }
+
+
+        }//end if
+
+        //allow a regular jump if we're standing on the ground
+        if (controller.collisions.below)
+        {
+            
+            velocity.y = maxJumpVelocity;
+
+        }//end if
+    }
+
+
+
+    public void OnJumpInputUp()
+    {
+        //set the y velocity to minJumpVelocity if it is greater than minJumpVelocity
+        velocity.y = (velocity.y > minJumpVelocity) ? minJumpVelocity : velocity.y;
+    }
+
+
+
+    void HandleWallSliding()
+    {
         //get the direction of the wall we're colliding with
         wallDirX = ((controller.collisions.left) ? -1 : 1);
-
-        //apply player's horizontal input smoothly
-        float targetVelocityX = directionalInput.x * moveSpeed;
-        velocity.x = Mathf.SmoothDamp(velocity.x, targetVelocityX, ref velocityXSmoothing, (controller.collisions.below) ? accelerationTimeGrounded : accelerationTimeAirborne);
 
         wallSliding = false;
 
@@ -95,63 +153,17 @@ public class Player : MonoBehaviour
             }//end if/else
 
         }//end if
-
-        //call controller's move method. this method will calculate how much to move the player to avoid collisions
-        controller.Move(velocity * Time.deltaTime);
-
-        //reset player's vertical momentum if they hit a floor or ceiling
-        if (controller.collisions.above || controller.collisions.below)
-        {
-            
-            velocity.y = 0;
-        }//end if
+    }
 
 
-        
 
+    void CalculateVelocity()
+    {
+        //apply player's horizontal input smoothly
+        float targetVelocityX = directionalInput.x * moveSpeed;
+        velocity.x = Mathf.SmoothDamp(velocity.x, targetVelocityX, ref velocityXSmoothing, (controller.collisions.below) ? accelerationTimeGrounded : accelerationTimeAirborne);
         //apply gravity
         velocity.y += gravity * Time.deltaTime;
-
-        
-
-    }//end Update method
-
-    public void SetDirectionalInput(Vector2 input)
-    {
-        directionalInput = input;
-    }
-
-    
-    
-    public void OnJumpInputDown()
-    {
-
-        if (wallSliding)
-        {
-            //only allow wall jumps if the input is in the opposite direction from the wall
-            if ((directionalInput.x != wallDirX) && (directionalInput.x != 0))
-            {
-                velocity.x = -wallDirX * wallJumpForce.x;
-                velocity.y = wallJumpForce.y;
-            }
-
-
-        }//end if
-
-        //allow a regular jump if we're standing on the ground
-        if (controller.collisions.below)
-        {
-            
-            velocity.y = maxJumpVelocity;
-
-        }//end if
-
-        
-    }
-    public void OnJumpInputUp()
-    {
-        //set the y velocity to minJumpVelocity if it is greater than minJumpVelocity
-        velocity.y = (velocity.y > minJumpVelocity) ? minJumpVelocity : velocity.y;
     }
 
    
