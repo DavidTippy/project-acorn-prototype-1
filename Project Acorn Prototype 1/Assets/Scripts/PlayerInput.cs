@@ -23,16 +23,20 @@ public class PlayerInput : MonoBehaviour
         player.SetDirectionalInput(directionalInput);
         
 
-        //get jump input
+        //get spacebar pressed
         if (Input.GetKeyDown(KeyCode.Space))
         {
 
             player.OnJumpInputDown();
+
+            //allow the player to jump when they hit the ground 
+            //if they start holding the jump button while they are traveling down
             player.canJumpEarly = (player.velocity.y < 0) ? true : false;
 
 
         }//end if
 
+        //get spacebar released
         if (Input.GetKeyUp(KeyCode.Space))
         {
 
@@ -41,6 +45,7 @@ public class PlayerInput : MonoBehaviour
 
         }//end if
 
+        //get spacebar held
         if (Input.GetKey(KeyCode.Space))
         {
 

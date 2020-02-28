@@ -8,7 +8,12 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
 
+    //variable to allow player to jump by pressing the jump button while 
+    //traveling down and holding it until they hit the ground
     public bool canJumpEarly;
+
+    //variable to alllow the player to jump for a few frames after walking off a ledge
+    public bool canJumpLate;
 
     public float maxJumpHeight = 4;
     public float minJumpHeight = 1.5f;
@@ -123,7 +128,7 @@ public class Player : MonoBehaviour
     public void OnJumpInputHeld()
     {
         //allow a regular jump if we're standing on the ground
-        if (controller.collisions.below && canJumpEarly)
+        if ((controller.collisions.below && canJumpEarly ))
         {
 
             velocity.y = maxJumpVelocity;
