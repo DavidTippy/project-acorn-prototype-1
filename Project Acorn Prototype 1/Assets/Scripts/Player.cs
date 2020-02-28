@@ -1,5 +1,6 @@
 ﻿//This script is based on the series of tutorial videos "Creating a 2D Platformer" by Sebastian Lague on YouTube
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,8 +13,10 @@ public class Player : MonoBehaviour
     //traveling down and holding it until they hit the ground
     public bool canJumpEarly;
 
-    //variable to alllow the player to jump for a few frames after walking off a ledge
+    //variables to alllow the player to jump for a few frames after walking off a ledge
     public bool canJumpLate;
+    public float lateJumpTime = .5f;
+    public float lateJumpCounter;
 
     public float maxJumpHeight = 4;
     public float minJumpHeight = 1.5f;
@@ -66,9 +69,13 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        HandleLateJumps();
         CalculateVelocity();
         HandleWallSliding();
-     
+
+        
+
+
         //call controller's move method. this method will calculate how much to move the player to avoid collisions
         controller.Move(velocity * Time.deltaTime);
 
@@ -80,7 +87,7 @@ public class Player : MonoBehaviour
 
     }//end Update method
 
-
+    
 
     public void SetDirectionalInput(Vector2 input)
     {
@@ -109,6 +116,7 @@ public class Player : MonoBehaviour
         {
 
             velocity.y = maxJumpVelocity;
+            canJumpLate = false;
 
         }//end if
 
@@ -128,14 +136,40 @@ public class Player : MonoBehaviour
     public void OnJumpInputHeld()
     {
         //allow a regular jump if we're standing on the ground
-        if ((controller.collisions.below && canJumpEarly ))
+        if ((controller.collisions.below && canJumpEarly ) || canJumpLate)
         {
 
             velocity.y = maxJumpVelocity;
             canJumpEarly = false;
+            canJumpLate = false;
 
         }//end if
     }
+
+
+
+    private void HandleLateJumps()
+    {
+        
+        if(controller.collisions.below)
+        {
+            canJumpLate = true;
+            lateJumpCounter = lateJumpTime;
+        } else if(lateJumpCounter > 0)
+        {
+            lateJumpCounter -= Time.deltaTime;
+        } else
+        {
+            canJumpLate = false;
+        }
+
+        //don't allow a late jump if we're moving upwards
+        if(velocity.y > 0)
+        {
+            canJumpLate = false;
+        }
+        
+    } 
 
 
 
