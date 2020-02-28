@@ -151,6 +151,7 @@ public class Player : MonoBehaviour
     private void HandleLateJumps()
     {
         
+        //give the player a short window in which to input a jump after they've walked off a block.
         if(controller.collisions.below)
         {
             canJumpLate = true;
