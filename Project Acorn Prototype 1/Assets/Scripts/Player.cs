@@ -73,9 +73,6 @@ public class Player : MonoBehaviour
         CalculateVelocity();
         HandleWallSliding();
 
-        
-
-
         //call controller's move method. this method will calculate how much to move the player to avoid collisions
         controller.Move(velocity * Time.deltaTime);
 
@@ -116,7 +113,6 @@ public class Player : MonoBehaviour
         {
 
             velocity.y = maxJumpVelocity;
-            canJumpLate = false;
 
         }//end if
 

@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent (typeof (Player))]
+[RequireComponent(typeof(Player))]
 public class PlayerInput : MonoBehaviour
 {
 
@@ -21,9 +21,6 @@ public class PlayerInput : MonoBehaviour
     {
         Vector2 directionalInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
         player.SetDirectionalInput(directionalInput);
-
-        
-        
 
         //get spacebar pressed
         if (Input.GetKeyDown(KeyCode.Space))
