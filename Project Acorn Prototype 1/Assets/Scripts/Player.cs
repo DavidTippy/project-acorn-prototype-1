@@ -9,20 +9,20 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
 
-    //variable to allow player to jump by pressing the jump button while 
-    //traveling down and holding it until they hit the ground
     public bool canJumpEarly;
+
 
     //variables to alllow the player to jump for a few frames after walking off a ledge
     public bool canJumpLate;
     public float lateJumpTime = .5f;
     public float lateJumpCounter;
 
+
     public float maxJumpHeight = 4;
     public float minJumpHeight = 1.5f;
     public float timeToJumpApex = .3f;
 
-    float accelerationTimeAirborne = .3f;
+    float accelerationTimeAirborne = .2f;
     float accelerationTimeGrounded = .1f;
 
     public float moveSpeed = 7;
@@ -73,6 +73,9 @@ public class Player : MonoBehaviour
         CalculateVelocity();
         HandleWallSliding();
 
+        
+
+
         //call controller's move method. this method will calculate how much to move the player to avoid collisions
         controller.Move(velocity * Time.deltaTime);
 
@@ -113,6 +116,7 @@ public class Player : MonoBehaviour
         {
 
             velocity.y = maxJumpVelocity;
+            canJumpLate = false;
 
         }//end if
 
@@ -132,7 +136,7 @@ public class Player : MonoBehaviour
     public void OnJumpInputHeld()
     {
         //allow a regular jump if we're standing on the ground
-        if ((controller.collisions.below && canJumpEarly ) || canJumpLate)
+        if ((controller.collisions.below && canJumpEarly) || (!controller.collisions.below && canJumpLate))
         {
 
             velocity.y = maxJumpVelocity;
@@ -147,7 +151,6 @@ public class Player : MonoBehaviour
     private void HandleLateJumps()
     {
         
-        //give the player a short window in which to input a jump after they've walked off a block.
         if(controller.collisions.below)
         {
             canJumpLate = true;

@@ -244,14 +244,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canJumpEarly: 0
   canJumpLate: 0
-  lateJumpTime: 0.1
+  lateJumpTime: 0.15
   lateJumpCounter: 0
   maxJumpHeight: 5.5
   minJumpHeight: 2
-  timeToJumpApex: 0.4
+  timeToJumpApex: 0.47
   moveSpeed: 8
   velocity: {x: 0, y: 0}
-  wallJumpForce: {x: 15, y: 26}
+  wallJumpForce: {x: 8, y: 28}
   wallSlideSpeedMax: 5
   wallStickTime: 0.2
   timeToWallUnstick: 0

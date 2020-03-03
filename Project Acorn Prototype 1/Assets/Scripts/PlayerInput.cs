@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Player))]
+[RequireComponent (typeof (Player))]
 public class PlayerInput : MonoBehaviour
 {
 
@@ -22,20 +22,20 @@ public class PlayerInput : MonoBehaviour
         Vector2 directionalInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
         player.SetDirectionalInput(directionalInput);
 
-        //get spacebar pressed
+        
+        
+
+        //get jump input
         if (Input.GetKeyDown(KeyCode.Space))
         {
 
             player.OnJumpInputDown();
-
-            //allow the player to jump when they hit the ground 
-            //if they start holding the jump button while they are traveling down
             player.canJumpEarly = (player.velocity.y < 0) ? true : false;
+            Debug.Log(player.canJumpEarly);
 
 
         }//end if
 
-        //get spacebar released
         if (Input.GetKeyUp(KeyCode.Space))
         {
 
@@ -44,7 +44,6 @@ public class PlayerInput : MonoBehaviour
 
         }//end if
 
-        //get spacebar held
         if (Input.GetKey(KeyCode.Space))
         {
 
