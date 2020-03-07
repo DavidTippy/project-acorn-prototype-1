@@ -73,7 +73,8 @@ public class Player : MonoBehaviour
         CalculateVelocity();
         HandleWallSliding();
 
-        
+        //flip the player to face the correct direction
+        transform.localScale = new Vector2(controller.collisions.faceDir, transform.localScale.y);
 
 
         //call controller's move method. this method will calculate how much to move the player to avoid collisions
