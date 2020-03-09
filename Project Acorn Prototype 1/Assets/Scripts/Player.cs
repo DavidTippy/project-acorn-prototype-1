@@ -45,7 +45,9 @@ public class Player : MonoBehaviour
     Controller2D controller;
 
     Vector2 directionalInput;
-    bool wallSliding;
+
+    [HideInInspector]
+    public bool wallSliding;
     int wallDirX;
 
 
@@ -73,10 +75,6 @@ public class Player : MonoBehaviour
         CalculateVelocity();
         HandleWallSliding();
 
-        //flip the player to face the correct direction
-        transform.localScale = new Vector2(controller.collisions.faceDir, transform.localScale.y);
-
-
         //call controller's move method. this method will calculate how much to move the player to avoid collisions
         controller.Move(velocity * Time.deltaTime);
 
@@ -85,6 +83,10 @@ public class Player : MonoBehaviour
         {           
             velocity.y = 0;
         }//end if
+
+        //flip the sprite to face the direction we're moving. 
+        //we don't flip the box collider because that could cause weird problems where we flip partially inside a wall
+        GetComponent<SpriteRenderer>().flipX = (controller.collisions.faceDir == -1) ? true : false;
 
     }//end Update method
 
@@ -113,7 +115,7 @@ public class Player : MonoBehaviour
         }//end if
 
         //allow a regular jump if we're standing on the ground
-        if (controller.collisions.below)
+        if (controller.collisions.below || (!controller.collisions.below && canJumpLate))
         {
 
             velocity.y = maxJumpVelocity;
@@ -137,7 +139,7 @@ public class Player : MonoBehaviour
     public void OnJumpInputHeld()
     {
         //allow a regular jump if we're standing on the ground
-        if ((controller.collisions.below && canJumpEarly) || (!controller.collisions.below && canJumpLate))
+        if ((controller.collisions.below && canJumpEarly))
         {
 
             velocity.y = maxJumpVelocity;
@@ -207,7 +209,8 @@ public class Player : MonoBehaviour
             }
             else
             {
-                velocity.x = directionalInput.x;
+
+                
                 timeToWallUnstick = wallStickTime;
             }//end if/else
 
