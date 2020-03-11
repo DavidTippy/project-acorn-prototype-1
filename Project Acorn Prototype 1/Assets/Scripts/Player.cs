@@ -11,7 +11,6 @@ public class Player : MonoBehaviour
 
     public bool canJumpEarly;
 
-
     //variables to alllow the player to jump for a few frames after walking off a ledge
     public bool canJumpLate;
     public float lateJumpTime = .5f;
@@ -87,6 +86,11 @@ public class Player : MonoBehaviour
         //flip the sprite to face the direction we're moving. 
         //we don't flip the box collider because that could cause weird problems where we flip partially inside a wall
         GetComponent<SpriteRenderer>().flipX = (controller.collisions.faceDir == -1) ? true : false;
+
+        if (this.transform.GetChild(0).transform.name == "ProjectAcornPlayerLowerBody")
+        {
+            this.transform.GetChild(0).transform.GetComponent<SpriteRenderer>().flipX = (controller.collisions.faceDir == -1) ? true : false;
+        }
 
     }//end Update method
 
