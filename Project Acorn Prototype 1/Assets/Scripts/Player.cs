@@ -49,11 +49,15 @@ public class Player : MonoBehaviour
     public bool wallSliding;
     int wallDirX;
 
-
+    Animator animator;
 
     // Start is called before the first frame update
     void Start()
     {
+
+        animator = GetComponent<Animator>();
+        animator.SetBool("isRunning", false);
+
         //get Controller2D attached to player object
         controller = GetComponent<Controller2D>();
 
@@ -70,6 +74,19 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        animator.SetBool("isRunning", false);
+
+        //Set run animation
+        if (directionalInput.x != 0)
+        {
+
+            animator.SetBool("isRunning", true);
+
+        }
+
+        
+
         HandleLateJumps();
         CalculateVelocity();
         HandleWallSliding();
@@ -91,6 +108,8 @@ public class Player : MonoBehaviour
         {
             this.transform.GetChild(0).transform.GetComponent<SpriteRenderer>().flipX = (controller.collisions.faceDir == -1) ? true : false;
         }
+
+       
 
     }//end Update method
 

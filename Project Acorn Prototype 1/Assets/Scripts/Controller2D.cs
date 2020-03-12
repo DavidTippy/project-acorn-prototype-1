@@ -7,6 +7,7 @@ using UnityEngine;
 //make sure that the player has a BoxCollider2D component
 public class Controller2D : RaycastController
 {
+    
 
     public CollisionInfo collisions;
 
@@ -14,7 +15,11 @@ public class Controller2D : RaycastController
     //while still allowing us to put things in the start method for Controller2D
     public override void Start()
     {
+
+
         base.Start();
+
+        
 
         //set the player to face right
         collisions.faceDir = 1;
@@ -35,6 +40,7 @@ public class Controller2D : RaycastController
         if (velocity.x != 0)
         {
             collisions.faceDir = (int)Mathf.Sign(velocity.x);
+            
         }
 
         // figure out if we're going to run into something to our left or right
