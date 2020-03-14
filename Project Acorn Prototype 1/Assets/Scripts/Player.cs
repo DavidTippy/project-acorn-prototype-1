@@ -109,7 +109,12 @@ public class Player : MonoBehaviour
             this.transform.GetChild(0).transform.GetComponent<SpriteRenderer>().flipX = (controller.collisions.faceDir == -1) ? true : false;
         }
 
-       
+        if (this.transform.GetChild(1).transform.name == "ProjectAcornPlayerTail")
+        {
+            this.transform.GetChild(1).transform.GetComponent<SpriteRenderer>().flipX = (controller.collisions.faceDir == -1) ? true : false;
+        }
+
+
 
     }//end Update method
 
@@ -256,8 +261,11 @@ public class Player : MonoBehaviour
 
         animator.SetBool("isRunning", false);
         animator.SetBool("isAirborne", false);
+        animator.SetBool("isOnWall", false);
         legAnimator.SetBool("isRunning", false);
         legAnimator.SetBool("isAirborne", false);
+        legAnimator.SetBool("isOnWall", false);
+
 
         //Set run animation
         if (directionalInput.x != 0)
@@ -273,6 +281,14 @@ public class Player : MonoBehaviour
 
             animator.SetBool("isAirborne", true);
             legAnimator.SetBool("isAirborne", true);
+
+        }
+
+        if(wallSliding)
+        {
+
+            animator.SetBool("isOnWall", true);
+            legAnimator.SetBool("isOnWall", true);
 
         }
 
