@@ -24,7 +24,7 @@ public class Player : MonoBehaviour
     float accelerationTimeAirborne = .2f;
     float accelerationTimeGrounded = .1f;
 
-    public float moveSpeed = 7;
+    public float moveSpeed = 5;
     float gravity;
     float maxJumpVelocity;
     float minJumpVelocity;
@@ -50,13 +50,22 @@ public class Player : MonoBehaviour
     int wallDirX;
 
     Animator animator;
+    Animator legAnimator;
 
     // Start is called before the first frame update
     void Start()
     {
 
+        //Get animator for upper body
         animator = GetComponent<Animator>();
         animator.SetBool("isRunning", false);
+
+        //Get animator for lower body
+        if (this.transform.GetChild(0).transform.name == "ProjectAcornPlayerLowerBody")
+        {
+            legAnimator = this.transform.GetChild(0).transform.GetComponent<Animator>();
+            legAnimator.SetBool("isRunning", false);
+        }
 
         //get Controller2D attached to player object
         controller = GetComponent<Controller2D>();
@@ -67,6 +76,8 @@ public class Player : MonoBehaviour
         maxJumpVelocity = Mathf.Abs(gravity) * timeToJumpApex;
         minJumpVelocity = Mathf.Sqrt(2 * Mathf.Abs(gravity) * minJumpHeight);
 
+        
+
     }//end Start method
 
 
@@ -75,18 +86,7 @@ public class Player : MonoBehaviour
     void Update()
     {
 
-        animator.SetBool("isRunning", false);
-
-        //Set run animation
-        if (directionalInput.x != 0)
-        {
-
-            animator.SetBool("isRunning", true);
-
-        }
-
-        
-
+        AnimatePlayer();
         HandleLateJumps();
         CalculateVelocity();
         HandleWallSliding();
@@ -249,6 +249,34 @@ public class Player : MonoBehaviour
         velocity.x = Mathf.SmoothDamp(velocity.x, targetVelocityX, ref velocityXSmoothing, (controller.collisions.below) ? accelerationTimeGrounded : accelerationTimeAirborne);
         //apply gravity
         velocity.y += gravity * Time.deltaTime;
+    }
+
+    public void AnimatePlayer()
+    {
+
+        animator.SetBool("isRunning", false);
+        animator.SetBool("isAirborne", false);
+        legAnimator.SetBool("isRunning", false);
+        legAnimator.SetBool("isAirborne", false);
+
+        //Set run animation
+        if (directionalInput.x != 0)
+        {
+
+            animator.SetBool("isRunning", true);
+            legAnimator.SetBool("isRunning", true);
+
+        }
+
+        if(!controller.collisions.below)
+        {
+
+            animator.SetBool("isAirborne", true);
+            legAnimator.SetBool("isAirborne", true);
+
+        }
+
+
     }
 
    
