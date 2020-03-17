@@ -509,10 +509,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 268468330}
   verticalOffset: 3
-  lookAheadDistanceX: 4
+  lookAheadDistanceX: 3
   lookSmoothTimeX: 0.2
-  verticalSmoothTime: 0.2
-  focusAreaSize: {x: 3, y: 5}
+  verticalSmoothTime: 0.1
+  focusAreaSize: {x: 3, y: 3}
 --- !u!1 &1022529067
 GameObject:
   m_ObjectHideFlags: 0
