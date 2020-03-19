@@ -11,6 +11,8 @@ public class Controller2D : RaycastController
 
     public CollisionInfo collisions;
 
+    public Vector2 playerInput;
+
     //This method calls the start method in RaycastController 
     //while still allowing us to put things in the start method for Controller2D
     public override void Start()
@@ -27,8 +29,10 @@ public class Controller2D : RaycastController
 
 
 
-    public void Move(Vector2 velocity)
+    public void Move(Vector2 velocity, Vector2 input)
     {
+
+        playerInput = input;
 
         //make sure we know where the corners of the collider are
         UpdateRaycastOrigins();

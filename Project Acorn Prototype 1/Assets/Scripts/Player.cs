@@ -92,7 +92,7 @@ public class Player : MonoBehaviour
         HandleWallSliding();
 
         //call controller's move method. this method will calculate how much to move the player to avoid collisions
-        controller.Move(velocity * Time.deltaTime);
+        controller.Move(velocity * Time.deltaTime, directionalInput);
 
         //reset player's vertical momentum if they hit a floor or ceiling
         if (controller.collisions.above || controller.collisions.below)
