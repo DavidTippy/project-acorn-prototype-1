@@ -11,7 +11,7 @@ public class SceneController : MonoBehaviour
     void Start()
     {
         //pm = GameObject.Find("MasterGameController").GetComponent<PlayerManager>();
-        StartCoroutine(LoadingLevel("Scene1", 0, 100));
+        StartCoroutine(LoadingLevel("Scene1", 3, 0));
     }
 
     //SaveSystem.Load().roomName
