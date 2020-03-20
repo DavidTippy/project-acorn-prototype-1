@@ -26,44 +26,58 @@ public class CameraFollow : MonoBehaviour
 
     void Start()
     {
-        focusArea = new FocusArea(target.collider.bounds, focusAreaSize);
+        
     }
 
     void LateUpdate()
     {
-        focusArea.Update(target.collider.bounds);
 
-        Vector2 focusPosition = focusArea.center + Vector2.up * verticalOffset;
-
-        if(focusArea.velocity.x != 0)
+        if (target ?? false)
         {
-            lookAheadDirX = Mathf.Sign(focusArea.velocity.x);
 
-            if (Mathf.Sign(target.playerInput.x) == Mathf.Sign(focusArea.velocity.x) && target.playerInput.x != 0)
+            focusArea.Update(target.collider.bounds);
+
+            Vector2 focusPosition = focusArea.center + Vector2.up * verticalOffset;
+
+            if (focusArea.velocity.x != 0)
             {
-                lookAheadStopped = false;
-                targetLookAheadX = lookAheadDirX * lookAheadDstX;
-            }
-            else
-            {
-                if (!lookAheadStopped)
+                lookAheadDirX = Mathf.Sign(focusArea.velocity.x);
+
+                if (Mathf.Sign(target.playerInput.x) == Mathf.Sign(focusArea.velocity.x) && target.playerInput.x != 0)
                 {
-                    lookAheadStopped = true;
-                    targetLookAheadX = currentLookAheadX + (lookAheadDirX * lookAheadDstX - currentLookAheadX) / 4f;
+                    lookAheadStopped = false;
+                    targetLookAheadX = lookAheadDirX * lookAheadDstX;
                 }
+                else
+                {
+                    if (!lookAheadStopped)
+                    {
+                        lookAheadStopped = true;
+                        targetLookAheadX = currentLookAheadX + (lookAheadDirX * lookAheadDstX - currentLookAheadX) / 4f;
+                    }
 
-            }
+                }
 
             }//end if
 
-        targetLookAheadX = lookAheadDirX * lookAheadDstX;
-        currentLookAheadX = Mathf.SmoothDamp(currentLookAheadX, targetLookAheadX, ref smoothLookVelocityX, lookSmoothTimeX);
+            targetLookAheadX = lookAheadDirX * lookAheadDstX;
+            currentLookAheadX = Mathf.SmoothDamp(currentLookAheadX, targetLookAheadX, ref smoothLookVelocityX, lookSmoothTimeX);
 
-        focusPosition.y = Mathf.SmoothDamp(transform.position.y, focusPosition.y, ref smoothVelocityY, verticalSmoothTime);
-        focusPosition += Vector2.right * currentLookAheadX;
-        transform.position = (Vector3)focusPosition + Vector3.forward * -10;
+            focusPosition.y = Mathf.SmoothDamp(transform.position.y, focusPosition.y, ref smoothVelocityY, verticalSmoothTime);
+            focusPosition += Vector2.right * currentLookAheadX;
+            transform.position = (Vector3)focusPosition + Vector3.forward * -10;
+
+        }
+        else
+        {
+
+            target = GameObject.FindWithTag("Player").GetComponent<Controller2D>();
+            focusArea = new FocusArea(target.collider.bounds, focusAreaSize);
+
+        }//end if/else
     }
 
+    //Draw focus area
     void OnDrawGizmos()
     {
         Gizmos.color = new Color(1, 0, 0, .5f);
@@ -94,6 +108,8 @@ public class CameraFollow : MonoBehaviour
 
         public void Update(Bounds targetBounds)
         {
+
+            //update left and right bounds
             float shiftX = 0;
             if (targetBounds.min.x < left)
             {
@@ -107,7 +123,7 @@ public class CameraFollow : MonoBehaviour
             right += shiftX;
 
 
-
+            //update top and bottom bounds
             float shiftY = 0;
             if (targetBounds.min.y < bottom)
             {
