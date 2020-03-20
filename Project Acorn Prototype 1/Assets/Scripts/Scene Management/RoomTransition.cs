@@ -14,6 +14,8 @@ public class RoomTransition : MonoBehaviour
     void Start()
     {
         sc = GameObject.Find("MasterGameController").GetComponent<SceneController>();
+
+        
     }
 
 
@@ -26,8 +28,13 @@ public class RoomTransition : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
+
+        Debug.Log("Contact");
+
         if (other.CompareTag("Player"))
         {
+
+            
             //other.transform.position = new Vector2(xCoordinate, yCoordinate);
             sc.ChangeRooms(roomName, xCoordinate, yCoordinate);
         }
