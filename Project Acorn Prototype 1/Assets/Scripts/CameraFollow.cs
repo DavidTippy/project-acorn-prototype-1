@@ -4,10 +4,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(BoxCollider2D))]
 public class CameraFollow : MonoBehaviour
 {
 
     Controller2D target;
+    public BoxCollider2D cameraCollider;
     public float verticalOffset;
     public float lookAheadDstX;
     public float lookSmoothTimeX;
@@ -24,9 +26,12 @@ public class CameraFollow : MonoBehaviour
 
     bool lookAheadStopped;
 
+    bool blockedRight, blockedLeft, blockedTop, blockedBottom;
+
     void Start()
     {
-        
+        //get the camera'scollider
+        cameraCollider = GetComponent<BoxCollider2D>();
     }
 
     void LateUpdate()
@@ -72,7 +77,24 @@ public class CameraFollow : MonoBehaviour
             //change the focus position based on the current look ahead
             focusPosition += Vector2.right * currentLookAheadX;
 
-            //TODO: Check that the focus position is not out of bounds and move it back inside bounds if it is.
+            //Check that the focus position is not out of bounds and move it back inside bounds if it is.
+            if (blockedRight && focusPosition.x > transform.position.x)
+            {
+                focusPosition.x = transform.position.x;
+            }
+            if (blockedLeft && focusPosition.x < transform.position.x)
+            {
+                focusPosition.x = transform.position.x;
+            }
+            if (blockedTop && focusPosition.y < transform.position.y)
+            {
+                focusPosition.y = transform.position.y;
+            }
+            if (blockedBottom && focusPosition.y > transform.position.y)
+            {
+                focusPosition.y = transform.position.y;
+            }
+
 
             //move the camera, and make sure the camera is in front of the level (on the z-axis)
             transform.position = (Vector3)focusPosition + Vector3.forward * -10;
@@ -156,5 +178,36 @@ public class CameraFollow : MonoBehaviour
 
     }
 
-    
+    void OnTriggerEnter2D(Collider2D other)
+    {
+
+        Debug.Log("Contact");
+
+        if (other.CompareTag("RightBounds"))
+        {
+            blockedRight = true;
+
+        } else { blockedRight = false; }
+        
+        if (other.CompareTag("LeftBounds"))
+        {
+            blockedLeft = true;
+
+        } else { blockedLeft = false; }
+
+        if (other.CompareTag("TopBounds"))
+        {
+            blockedTop = true;
+
+        } else { blockedTop = false; }
+
+        if (other.CompareTag("BottomBounds"))
+        {
+            blockedBottom = true;
+
+        } else { blockedBottom = false; }
+
+    }
+
+
 }
