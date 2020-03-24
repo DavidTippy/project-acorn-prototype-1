@@ -86,18 +86,50 @@ public class CameraFollow : MonoBehaviour
             {
                 focusPosition.x = transform.position.x;
             }
-            if (blockedTop && focusPosition.y < transform.position.y)
+            if (blockedTop && focusPosition.y > transform.position.y)
             {
                 focusPosition.y = transform.position.y;
             }
-            if (blockedBottom && focusPosition.y > transform.position.y)
+            if (blockedBottom && focusPosition.y < transform.position.y)
             {
                 focusPosition.y = transform.position.y;
             }
 
+            float yValue = 0;
+            float xValue = 0;
+            Vector3 temp;
 
             //move the camera, and make sure the camera is in front of the level (on the z-axis)
-            transform.position = (Vector3)focusPosition + Vector3.forward * -10;
+            
+            /*
+            if (focusPosition.y > transform.position.y)
+            {
+                yValue = transform.position.y + 0.1f;
+            } else if (focusPosition.y < transform.position.y)
+            {
+                yValue = transform.position.y - 0.1f;
+            } else
+            {
+                yValue = transform.position.y;
+            }
+
+            if (focusPosition.x > transform.position.x)
+            {
+                xValue = transform.position.x + 0.1f;
+            }
+            else if (focusPosition.x < transform.position.x)
+            {
+                xValue = transform.position.x - 0.1f;
+            }else
+            {
+                xValue = transform.position.x;
+            }
+
+            temp = new Vector3(xValue, yValue, -10);
+
+    */
+
+            transform.position = Vector3.MoveTowards((Vector3)transform.position,((Vector3)focusPosition + Vector3.forward * -10), 1);
 
         }
         else // if we do not have a player for the camera to target
@@ -105,6 +137,7 @@ public class CameraFollow : MonoBehaviour
 
             //find the player
             target = GameObject.FindWithTag("Player").GetComponent<Controller2D>();
+
             focusArea = new FocusArea(target.collider.bounds, focusAreaSize);
 
         }//end if/else
@@ -187,26 +220,57 @@ public class CameraFollow : MonoBehaviour
         {
             blockedRight = true;
 
-        } else { blockedRight = false; }
+        } 
         
         if (other.CompareTag("LeftBounds"))
         {
             blockedLeft = true;
 
-        } else { blockedLeft = false; }
+        } 
 
         if (other.CompareTag("TopBounds"))
         {
             blockedTop = true;
 
-        } else { blockedTop = false; }
+        } 
 
         if (other.CompareTag("BottomBounds"))
         {
             blockedBottom = true;
 
-        } else { blockedBottom = false; }
+        }
 
+        if (other.CompareTag("Player"))
+        {
+        
+        }
+    }
+
+    void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.CompareTag("RightBounds"))
+        {
+            blockedRight = false;
+
+        }
+
+        if (other.CompareTag("LeftBounds"))
+        {
+            blockedLeft = false;
+
+        }
+
+        if (other.CompareTag("TopBounds"))
+        {
+            blockedTop = false;
+
+        }
+
+        if (other.CompareTag("BottomBounds"))
+        {
+            blockedBottom = false;
+
+        }
     }
 
 
