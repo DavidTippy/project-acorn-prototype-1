@@ -100,7 +100,7 @@ public class CameraFollow : MonoBehaviour
             Vector3 temp;
 
             //move the camera, and make sure the camera is in front of the level (on the z-axis)
-
+            
             /*
             if (focusPosition.y > transform.position.y)
             {
@@ -129,11 +129,8 @@ public class CameraFollow : MonoBehaviour
 
     */
 
-            while (1 == 1) {
+            transform.position = Vector3.MoveTowards((Vector3)transform.position,((Vector3)focusPosition + Vector3.forward * -10), 1);
 
-                transform.position = Vector3.MoveTowards((Vector3)transform.position, ((Vector3)focusPosition + Vector3.forward * -10), 0.0625f);
-
-            }//end while
         }
         else // if we do not have a player for the camera to target
         {
