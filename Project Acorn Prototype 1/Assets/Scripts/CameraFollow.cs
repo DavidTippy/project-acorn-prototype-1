@@ -77,30 +77,14 @@ public class CameraFollow : MonoBehaviour
             //change the focus position based on the current look ahead
             focusPosition += Vector2.right * currentLookAheadX;
 
-            //Check that the focus position is not out of bounds and move it back inside bounds if it is.
-            if (blockedRight && focusPosition.x > transform.position.x)
-            {
-                focusPosition.x = transform.position.x;
-            }
-            if (blockedLeft && focusPosition.x < transform.position.x)
-            {
-                focusPosition.x = transform.position.x;
-            }
-            if (blockedTop && focusPosition.y > transform.position.y)
-            {
-                focusPosition.y = transform.position.y;
-            }
-            if (blockedBottom && focusPosition.y < transform.position.y)
-            {
-                focusPosition.y = transform.position.y;
-            }
+            
 
             float yValue = 0;
             float xValue = 0;
             Vector3 temp;
 
             //move the camera, and make sure the camera is in front of the level (on the z-axis)
-            
+
             /*
             if (focusPosition.y > transform.position.y)
             {
@@ -129,8 +113,32 @@ public class CameraFollow : MonoBehaviour
 
     */
 
-            transform.position = Vector3.MoveTowards((Vector3)transform.position,((Vector3)focusPosition + Vector3.forward * -10), 1);
+            int i = 100;
 
+            while (i > 0) {
+
+                //Check that the focus position is not out of bounds and move it back inside bounds if it is.
+                if (blockedRight && focusPosition.x > transform.position.x)
+                {
+                    focusPosition.x = transform.position.x;
+                }
+                if (blockedLeft && focusPosition.x < transform.position.x)
+                {
+                    focusPosition.x = transform.position.x;
+                }
+                if (blockedTop && focusPosition.y > transform.position.y)
+                {
+                    focusPosition.y = transform.position.y;
+                }
+                if (blockedBottom && focusPosition.y < transform.position.y)
+                {
+                    focusPosition.y = transform.position.y;
+                }
+
+                transform.position = Vector3.MoveTowards((Vector3)transform.position, ((Vector3)focusPosition + Vector3.forward * -10), 0.0625f);
+                i--;
+
+            }//end while
         }
         else // if we do not have a player for the camera to target
         {
@@ -150,6 +158,13 @@ public class CameraFollow : MonoBehaviour
         Gizmos.DrawCube(focusArea.center, focusAreaSize);
     }
 
+    bool CanMoveTowards(Vector2 focusPos)
+    {
+
+        
+
+        return true;
+    }
 
     //the focus area is a small area around the player where we can move without the camera moving.
     struct FocusArea
@@ -209,7 +224,7 @@ public class CameraFollow : MonoBehaviour
 
         }
 
-    }
+    }//end struct FocusArea
 
     void OnTriggerEnter2D(Collider2D other)
     {
@@ -244,7 +259,7 @@ public class CameraFollow : MonoBehaviour
         {
         
         }
-    }
+    }//end OnTriggerEnter2D
 
     void OnTriggerExit2D(Collider2D other)
     {
@@ -271,7 +286,7 @@ public class CameraFollow : MonoBehaviour
             blockedBottom = false;
 
         }
-    }
+    }//end OnTriggerExit2D
 
 
 }
